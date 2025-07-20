@@ -3,28 +3,26 @@ const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const productRouter =  require('./routes/products');
+const categoryRouter =  require('./routes/categories');
+const orderRouter =  require('./routes/orders');
+const userRouter =  require('./routes/users');
+
+require('dotenv/config');
+const api = process.env.API_URL;
 
 // ** middlewares
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 
-require('dotenv/config');
 
-const api = process.env.API_URL;
+// ** routers
+app.use(`${api}/products` , productRouter);
+app.use(`${api}/categories` , categoryRouter);
+app.use(`${api}/orders` , orderRouter);
+app.use(`${api}/users` , userRouter);
 
-app.get(`${api}/products`, (req, res) => {
-    const product = {
-        id: 1,
-        name: 'Hair dresser',
-        image: 'some_url',
-    }
-    res.send(product);
-})
-app.post(`${api}/products`, (req, res) => {
-    const newProduct = req.body;
-    res.send(newProduct);
-})
-//**
+//** Database connection
 mongoose.connect(process.env.CONNECTION_STRING , {
     dbName: process.env.DB_NAME,
 })
