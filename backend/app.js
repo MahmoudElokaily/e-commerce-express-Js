@@ -7,14 +7,15 @@ const productRouter =  require('./routes/products');
 const categoryRouter =  require('./routes/categories');
 const orderRouter =  require('./routes/orders');
 const userRouter =  require('./routes/users');
+const cors = require('cors');
 
 require('dotenv/config');
+app.use(cors());
 const api = process.env.API_URL;
 
 // ** middlewares
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
-
 
 // ** routers
 app.use(`${api}/products` , productRouter);
@@ -33,6 +34,8 @@ mongoose.connect(process.env.CONNECTION_STRING , {
         console.error('❌ MongoDB connection error:', err);
     })
 
+
 app.listen(3000 , () => {
     console.log('🌐 Server is running at http://localhost:3000');
 });
+
