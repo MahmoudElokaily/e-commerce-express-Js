@@ -8,6 +8,8 @@ const categoryRouter =  require('./routes/categories');
 const orderRouter =  require('./routes/orders');
 const userRouter =  require('./routes/users');
 const cors = require('cors');
+const authJwt = require("./helpers/jwt");
+const errorHandler = require("./helpers/error-handler");
 
 require('dotenv/config');
 app.use(cors());
@@ -16,6 +18,8 @@ const api = process.env.API_URL;
 // ** middlewares
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
+app.use(authJwt())
+app.use(errorHandler)
 
 // ** routers
 app.use(`${api}/products` , productRouter);
