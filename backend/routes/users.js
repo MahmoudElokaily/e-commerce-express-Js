@@ -3,6 +3,8 @@ const {User} = require("../models/user");
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {Product} = require("../models/product");
+const mongoose = require("mongoose");
 
 router.get(`/`,async (req, res) => {
     const users = await User.find().select('-password');
@@ -85,5 +87,47 @@ router.post('/register',async (req, res) => {
         'user': user
     })
 });
+
+router.get('/get/count' ,  async (req, res) => {
+    const usersCount = await User.countDocuments();
+    if (!usersCount) {
+        return res.status(500).json({
+            success: false
+        })
+    }
+    res.send({
+        count: usersCount
+    });
+})
+
+router.delete('/:id',async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).send({
+            success: false,
+            message: 'Invalid user Id',
+        })
+    }
+    User.findByIdAndDelete(req.params.id)
+        .then((user) => {
+            if (user) {
+                return res.status(200).send({
+                    success: true,
+                    'message': 'User deleted successfully',
+                })
+            }
+            else {
+                return res.status(404).send({
+                    'success': false,
+                    'message': 'User not found',
+                })
+            }
+        })
+        .catch((err) => {
+            return res.status(500).send({
+                success: false,
+                'message': 'Error while deleting category',
+            })
+        })
+})
 
 module.exports = router;
