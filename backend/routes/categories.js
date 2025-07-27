@@ -80,12 +80,6 @@ router.delete('/:id',async (req, res) => {
             message: 'Invalid Category Id',
         })
     }
-    if (!mongoose.isValidObjectId(req.params.id)) {
-        return res.status(400).send({
-            success: false,
-            message: 'Invalid Category Id',
-        })
-    }
     Category.findByIdAndDelete(req.params.id)
         .then((category) => {
             if (category) {
